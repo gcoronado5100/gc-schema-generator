@@ -90,3 +90,8 @@ if ( is_dir( $gcsg_includes_dir ) ) {
 */
 register_activation_hook( __FILE__, 'gcsg_activate' );
 register_deactivation_hook( __FILE__, 'gcsg_deactivate' );
+
+// Phase 2 — settings page (callbacks live under includes/admin/).
+add_action( 'admin_menu',            'gcsg_register_settings_menu' );
+add_action( 'admin_init',            'gcsg_register_settings' );
+add_action( 'admin_enqueue_scripts', 'gcsg_admin_enqueue' );
