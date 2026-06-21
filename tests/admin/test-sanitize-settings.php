@@ -66,13 +66,13 @@ $expected_keys = array(
 // SC-1 — full 16-key contract (no missing/extra keys, always complete).
 // =============================================================================
 $out = gcsg_sanitize_settings( array( 'name' => 'Joe Auto' ) );
-gcsg_assert( count( $out ) === 16, 'SC-1: sanitized output has exactly 16 keys', $tests, $failures );
+gcsg_assert( count( $out ) === 17, 'SC-1: sanitized output has exactly 17 keys (full gcsg_get_settings contract)', $tests, $failures );
 gcsg_assert( array() === array_diff( $expected_keys, array_keys( $out ) ), 'SC-1: no expected key is missing', $tests, $failures );
 gcsg_assert( array() === array_diff( array_keys( $out ), $expected_keys ), 'SC-1: no unexpected extra key', $tests, $failures );
 
 // Partial input must STILL produce all 16 keys (Pitfall 2 — never partial).
 $partial = gcsg_sanitize_settings( array( 'name' => 'Joe Auto' ) );
-gcsg_assert( count( $partial ) === 16, 'SC-1: partial input still yields all 16 keys', $tests, $failures );
+gcsg_assert( count( $partial ) === 17, 'SC-1: partial input still yields all 17 keys', $tests, $failures );
 gcsg_assert( array() === array_diff( $expected_keys, array_keys( $partial ) ), 'SC-1: partial input has no missing key', $tests, $failures );
 
 // =============================================================================
