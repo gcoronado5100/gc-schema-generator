@@ -15,6 +15,13 @@
  * @since   feat/new_inventory_plugin_gc
  */
 
+// The helpers guard against direct web access with `if ( ! defined( 'ABSPATH' ) ) exit;`.
+// Define a dummy ABSPATH so requiring them under plain `php` does not short-circuit
+// the test runner (otherwise the guard exits 0 and no assertions run).
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', sys_get_temp_dir() . '/' );
+}
+
 if ( ! isset( $GLOBALS['__wp_options'] ) ) {
 	$GLOBALS['__wp_options'] = array();
 }
