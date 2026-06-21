@@ -65,3 +65,32 @@ if ( ! function_exists( 'wp_parse_args' ) ) {
 		return array_merge( $defaults, $args );
 	}
 }
+
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+	function sanitize_text_field( $str ) {
+		$str = (string) $str;
+		$str = strip_tags( $str );
+		// Collapse all whitespace (incl. newlines) to single spaces, then trim.
+		$str = preg_replace( '/[\r\n\t ]+/', ' ', $str );
+		return trim( $str );
+	}
+}
+
+if ( ! function_exists( 'sanitize_textarea_field' ) ) {
+	function sanitize_textarea_field( $str ) {
+		$str = (string) $str;
+		$str = strip_tags( $str );
+		// Trim trailing whitespace on each line; keep line breaks.
+		$lines = preg_split( '/\r\n|\r|\n/', $str );
+		$lines = array_map( 'trim', $lines );
+		return trim( implode( "\n", $lines ) );
+	}
+}
+
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	function esc_url_raw( $url ) {
+		$url = (string) $url;
+		$url = strip_tags( $url );
+		return trim( $url );
+	}
+}
