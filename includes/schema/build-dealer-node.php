@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *  - D-06 suppression: missing name OR any required address field → array().
  *  - D-06 omit: empty optional fields produce NO key (no fabrication, no empty
  *    strings/objects).
- *  - D-08: never emits aggregateRating (no fabricated reviews).
+ *  - D-08: never emits a rating/review aggregate (no fabricated reviews).
  *
  * Structure:
  *  - D-01 multi-type @type ['AutoDealer','LocalBusiness'].
@@ -152,6 +152,6 @@ function gcsg_build_dealer_node( array $s ) {
 		$node['sameAs'] = $urls;
 	}
 
-	// 6. Return — NEVER add aggregateRating (D-08).
+	// 6. Return — NEVER add a fabricated rating/review aggregate (D-08).
 	return $node;
 }
