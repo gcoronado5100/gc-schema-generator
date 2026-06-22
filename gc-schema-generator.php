@@ -95,3 +95,6 @@ register_deactivation_hook( __FILE__, 'gcsg_deactivate' );
 add_action( 'admin_menu',            'gcsg_register_settings_menu' );
 add_action( 'admin_init',            'gcsg_register_settings' );
 add_action( 'admin_enqueue_scripts', 'gcsg_admin_enqueue' );
+
+// Phase 3 — front-end JSON-LD output (callback under includes/front/).
+add_action( 'wp_head', 'gcsg_output_schema', 99 );
