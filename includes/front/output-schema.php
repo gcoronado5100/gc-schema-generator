@@ -2,7 +2,7 @@
 /**
  * Front-end JSON-LD output orchestrator (Mode B).
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -23,10 +23,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Flow:
  *   1. is_admin()              → return (front-end only, Pitfall 6).
- *   2. gcsg_is_yoast_active()  → return (D-09 single gate; Mode A is Phase 8).
- *   3. gcsg_detect_context()   → classify for Phase 4/6 parity; the dealer node
+ *   2. gcp_schema_is_yoast_active()  → return (D-09 single gate; Mode A is Phase 8).
+ *   3. gcp_schema_detect_context()   → classify for Phase 4/6 parity; the dealer node
  *                                emits regardless of context (D-02).
- *   4. gcsg_get_settings()     → single read (D-12).
+ *   4. gcp_schema_get_settings()     → single read (D-12).
  *   5. Build dealer node once; push only when non-empty (D-06 suppression).
  *   6. Zero nodes              → return, NO empty <script> (D-07 / BIZ-03).
  *   7. assemble → encode → echo one <script type="application/ld+json">.
@@ -35,19 +35,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void Echoes the JSON-LD <script> tag, or nothing when suppressed.
  */
-function gcsg_output_schema() {
+function gcp_schema_output_schema() {
 	if ( is_admin() ) {
 		return; // Front-end only (Pitfall 6).
 	}
-	if ( gcsg_is_yoast_active() ) {
+	if ( gcp_schema_is_yoast_active() ) {
 		return; // D-09 single emit-vs-defer gate; Mode A deferred to Phase 8.
 	}
 
-	$context  = gcsg_detect_context(); // Classify for Phase 4/6; dealer emits regardless (D-02).
-	$settings = gcsg_get_settings();   // Single read (D-12).
+	$context  = gcp_schema_detect_context(); // Classify for Phase 4/6; dealer emits regardless (D-02).
+	$settings = gcp_schema_get_settings();   // Single read (D-12).
 
 	$nodes  = array();
-	$dealer = gcsg_build_dealer_node( $settings );
+	$dealer = gcp_schema_build_dealer_node( $settings );
 	if ( ! empty( $dealer ) ) {
 		$nodes[] = $dealer;
 	}
@@ -56,6 +56,6 @@ function gcsg_output_schema() {
 		return; // D-07: no empty <script>.
 	}
 
-	$graph = gcsg_assemble_graph( $nodes );
-	echo '<script type="application/ld+json">' . gcsg_encode_jsonld( $graph ) . '</script>' . "\n";
+	$graph = gcp_schema_assemble_graph( $nodes );
+	echo '<script type="application/ld+json">' . gcp_schema_encode_jsonld( $graph ) . '</script>' . "\n";
 }

@@ -2,7 +2,7 @@
 /**
  * Schema.org @id factory helper.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -25,8 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * a site — there are no random or time-based components.
  *
  * Examples:
- *   gcsg_schema_id( 'Organization' )  => https://example.com/#/schema/Organization
- *   gcsg_schema_id( 'Offer', '123' )  => https://example.com/#/schema/Offer/123
+ *   gcp_schema_schema_id( 'Organization' )  => https://example.com/#/schema/Organization
+ *   gcp_schema_schema_id( 'Offer', '123' )  => https://example.com/#/schema/Offer/123
  *
  * @since feat/new_inventory_plugin_gc
  *
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string Absolute @id URI.
  */
-function gcsg_schema_id( $type, $suffix = '' ) {
+function gcp_schema_schema_id( $type, $suffix = '' ) {
 	$base = trailingslashit( home_url( '/' ) ) . '#/schema/' . $type;
 
 	if ( '' !== (string) $suffix ) {

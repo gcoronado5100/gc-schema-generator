@@ -1,8 +1,8 @@
 <?php
 /**
- * RED test for gcsg_assemble_graph() (OUT-03).
+ * RED test for gcp_schema_assemble_graph() (OUT-03).
  *
- * Wave-0 (TDD RED): gcsg_assemble_graph() DOES NOT EXIST yet, so this test
+ * Wave-0 (TDD RED): gcp_schema_assemble_graph() DOES NOT EXIST yet, so this test
  * exits 1 (RED). It locks the @graph wrapper contract — `@context` ===
  * 'https://schema.org', a numeric-list `@graph` preserving order, and a
  * list-shaped empty `@graph` when no nodes are passed — turning GREEN when
@@ -11,7 +11,7 @@
  * Standalone (no PHPUnit): run with `php tests/schema/test-assemble-graph.php`.
  * Exit code 0 = all pass, 1 = a failure.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -22,7 +22,7 @@ require_once $root . '/tests/wp-stubs.php';
 $failures = array();
 $tests    = 0;
 
-function gcsg_assert( $cond, $message, &$tests, &$failures ) {
+function gcp_schema_assert( $cond, $message, &$tests, &$failures ) {
 	$tests++;
 	if ( ! $cond ) {
 		$failures[] = $message;
@@ -40,16 +40,16 @@ if ( file_exists( $f ) ) {
 }
 
 // --- RED guard ---
-gcsg_assert( function_exists( 'gcsg_assemble_graph' ), 'gcsg_assemble_graph is defined', $tests, $failures );
-$have = function_exists( 'gcsg_assemble_graph' );
+gcp_schema_assert( function_exists( 'gcp_schema_assemble_graph' ), 'gcp_schema_assemble_graph is defined', $tests, $failures );
+$have = function_exists( 'gcp_schema_assemble_graph' );
 
 $node_a = array( '@type' => 'AutoDealer', '@id' => 'https://example.com/#/schema/Organization' );
 $node_b = array( '@type' => 'BreadcrumbList', '@id' => 'https://example.com/#/schema/Breadcrumb' );
 
-$graph = $have ? gcsg_assemble_graph( array( $node_a, $node_b ) ) : array();
+$graph = $have ? gcp_schema_assemble_graph( array( $node_a, $node_b ) ) : array();
 
 // --- OUT-03: @context === 'https://schema.org' ---
-gcsg_assert(
+gcp_schema_assert(
 	$have && isset( $graph['@context'] ) && 'https://schema.org' === $graph['@context'],
 	'OUT-03: @context === "https://schema.org"',
 	$tests,
@@ -58,13 +58,13 @@ gcsg_assert(
 
 // --- OUT-03: @graph is a numeric list of length 2, order preserved ---
 $g = isset( $graph['@graph'] ) && is_array( $graph['@graph'] ) ? $graph['@graph'] : null;
-gcsg_assert(
+gcp_schema_assert(
 	$have && null !== $g && array_values( $g ) === $g && 2 === count( $g ),
 	'OUT-03: @graph is a 2-element numeric list',
 	$tests,
 	$failures
 );
-gcsg_assert(
+gcp_schema_assert(
 	$have && null !== $g && isset( $g[0]['@type'] ) && 'AutoDealer' === $g[0]['@type']
 		&& isset( $g[1]['@type'] ) && 'BreadcrumbList' === $g[1]['@type'],
 	'OUT-03: @graph preserves node order',
@@ -73,8 +73,8 @@ gcsg_assert(
 );
 
 // --- OUT-03: empty input still yields the wrapper with list-shaped empty @graph ---
-$empty = $have ? gcsg_assemble_graph( array() ) : array();
-gcsg_assert(
+$empty = $have ? gcp_schema_assemble_graph( array() ) : array();
+gcp_schema_assert(
 	$have && isset( $empty['@context'] ) && 'https://schema.org' === $empty['@context']
 		&& isset( $empty['@graph'] ) && array() === $empty['@graph'],
 	'OUT-03: empty input → wrapper with @graph === array()',

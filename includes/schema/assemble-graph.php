@@ -2,7 +2,7 @@
 /**
  * JSON-LD @graph assembler.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -26,9 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @param array $nodes Ordered list of schema node arrays (may be empty).
  *
- * @return array {@context, @graph} structure ready for gcsg_encode_jsonld().
+ * @return array {@context, @graph} structure ready for gcp_schema_encode_jsonld().
  */
-function gcsg_assemble_graph( array $nodes ) {
+function gcp_schema_assemble_graph( array $nodes ) {
 	return array(
 		'@context' => 'https://schema.org',
 		'@graph'   => array_values( $nodes ),

@@ -2,7 +2,7 @@
 /**
  * Settings sanitize callback — the single choke point for the dealer-identity option.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -15,16 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 // files load independently; this require_once keeps the callback self-contained
 // for the standalone unit test (which requires only this file) without
 // double-loading in production.
-if ( ! function_exists( 'gcsg_normalize_time' ) ) {
+if ( ! function_exists( 'gcp_schema_normalize_time' ) ) {
 	require_once __DIR__ . '/normalize-time.php';
 }
 
 /**
  * Sanitize the full dealer-identity settings array.
  *
- * Bound as the `sanitize_callback` of the single `gcsg_settings` option, this is
+ * Bound as the `sanitize_callback` of the single `gcp_schema_settings` option, this is
  * the one place where every saved value is cleaned. It ALWAYS returns the full
- * 16-key contract (the same shape as gcsg_get_settings() defaults) regardless of
+ * 16-key contract (the same shape as gcp_schema_get_settings() defaults) regardless of
  * how partial or empty the submitted input is, so reads always round-trip.
  *
  * Per-type handling:
@@ -44,7 +44,7 @@ if ( ! function_exists( 'gcsg_normalize_time' ) ) {
  * @param mixed $input Raw submitted settings (expected array; coerced defensively).
  * @return array The sanitized 16-key settings array.
  */
-function gcsg_sanitize_settings( $input ) {
+function gcp_schema_sanitize_settings( $input ) {
 	$input = is_array( $input ) ? $input : array();
 
 	// Seed the FULL default shape so all 16 keys are always returned.
@@ -108,7 +108,7 @@ function gcsg_sanitize_settings( $input ) {
 	// pure unit test (no core stubs) still runs.
 	$allowed_currency = array( 'USD', 'CAD' );
 	if ( function_exists( 'apply_filters' ) ) {
-		$allowed_currency = apply_filters( 'gcsg_allowed_currencies', $allowed_currency );
+		$allowed_currency = apply_filters( 'gcp_schema_allowed_currencies', $allowed_currency );
 	}
 	if ( isset( $input['currency'] ) && in_array( $input['currency'], $allowed_currency, true ) ) {
 		$out['currency'] = $input['currency'];
@@ -122,8 +122,8 @@ function gcsg_sanitize_settings( $input ) {
 			if ( ! is_array( $row ) || ! empty( $row['closed'] ) ) {
 				continue;
 			}
-			$opens  = isset( $row['opens'] ) ? gcsg_normalize_time( $row['opens'] ) : '';
-			$closes = isset( $row['closes'] ) ? gcsg_normalize_time( $row['closes'] ) : '';
+			$opens  = isset( $row['opens'] ) ? gcp_schema_normalize_time( $row['opens'] ) : '';
+			$closes = isset( $row['closes'] ) ? gcp_schema_normalize_time( $row['closes'] ) : '';
 			if ( '' === $opens || '' === $closes ) {
 				continue;
 			}

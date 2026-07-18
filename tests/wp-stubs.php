@@ -2,7 +2,7 @@
 /**
  * Minimal WordPress function stubs for standalone helper tests.
  *
- * The gc-schema-generator helpers are pure and depend only on a handful of
+ * The gcp-schema-generator helpers are pure and depend only on a handful of
  * core-WP functions (get_option, wp_parse_args, home_url, post_type_exists,
  * trailingslashit). The project has no build step and no WP-PHPUnit harness, so
  * these lightweight stubs let the pure helpers be exercised under plain `php`.
@@ -10,7 +10,7 @@
  * Tests poke the backing arrays ($GLOBALS['__wp_options'], etc.) to control
  * the simulated WordPress environment.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -124,7 +124,7 @@ if ( ! function_exists( 'wp_json_encode' ) ) {
 	 * CRITICAL — D-11 neutrality requirement: this stub passes the caller's
 	 * $options through to PHP json_encode() UNCHANGED. It MUST NOT OR-in
 	 * JSON_UNESCAPED_SLASHES / JSON_UNESCAPED_UNICODE. The production
-	 * gcsg_encode_jsonld() helper (Plan 03-02) is the SINGLE place that supplies
+	 * gcp_schema_encode_jsonld() helper (Plan 03-02) is the SINGLE place that supplies
 	 * those two flags; if this stub re-added them it would silently mask a
 	 * helper that forgot them, turning test-encode-jsonld.php GREEN on a
 	 * D-11-violating implementation. DO NOT "helpfully" re-add the flags here.
@@ -214,7 +214,7 @@ if ( ! function_exists( 'is_singular' ) ) {
 /**
  * Test-only Yoast toggle helper.
  *
- * The real gcsg_is_yoast_active() reads the WPSEO_VERSION constant / WPSEO_Options
+ * The real gcp_schema_is_yoast_active() reads the WPSEO_VERSION constant / WPSEO_Options
  * class, neither of which a single in-process test can flip on and off (a defined
  * constant cannot be un-defined). Tests that need to exercise the Yoast-ON branch
  * therefore define WPSEO_VERSION in a SEPARATE php sub-process (see
@@ -229,7 +229,7 @@ if ( ! function_exists( 'is_singular' ) ) {
  *
  * @return void
  */
-function gcsg_test_set_yoast( $active ) {
+function gcp_schema_test_set_yoast( $active ) {
 	$GLOBALS['__wp_yoast_active'] = (bool) $active;
 }
 
@@ -240,6 +240,6 @@ function gcsg_test_set_yoast( $active ) {
  *
  * @return bool Current simulated Yoast-active state.
  */
-function gcsg_test_yoast_class_exists() {
+function gcp_schema_test_yoast_class_exists() {
 	return ! empty( $GLOBALS['__wp_yoast_active'] );
 }

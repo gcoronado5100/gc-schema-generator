@@ -4,3 +4,5 @@ dist/
 hd-schema-generator/
 CLAUDE.md
 .planning/
+.claude/
+.DS_Store

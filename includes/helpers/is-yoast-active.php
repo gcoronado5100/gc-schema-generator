@@ -2,7 +2,7 @@
 /**
  * Yoast SEO detection helper.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -24,6 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return bool True when Yoast SEO is active, false otherwise.
  */
-function gcsg_is_yoast_active() {
+function gcp_schema_is_yoast_active() {
 	return defined( 'WPSEO_VERSION' ) || class_exists( 'WPSEO_Options' );
 }

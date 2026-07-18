@@ -2,7 +2,7 @@
 /**
  * Opening-hours field group renderer for the settings page.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -25,8 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function gcsg_render_hours_fields() {
-	$s = gcsg_get_settings();
+function gcp_schema_render_hours_fields() {
+	$s = gcp_schema_get_settings();
 
 	// Index the stored list by day for re-population.
 	$by_day = array();
@@ -38,24 +38,24 @@ function gcsg_render_hours_fields() {
 
 	$days = array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' );
 	?>
-	<div class="gcsg-hours">
+	<div class="gcp-schema-hours">
 		<?php foreach ( $days as $day ) : ?>
 			<?php
 			$opens  = isset( $by_day[ $day ]['opens'] ) ? $by_day[ $day ]['opens'] : '';
 			$closes = isset( $by_day[ $day ]['closes'] ) ? $by_day[ $day ]['closes'] : '';
 			?>
-			<p class="gcsg-hours-row">
+			<p class="gcp-schema-hours-row">
 				<label style="display:inline-block;min-width:96px;"><strong><?php echo esc_html( $day ); ?></strong></label>
-				<input type="time" name="gcsg_settings[opening_hours][<?php echo esc_attr( $day ); ?>][opens]" value="<?php echo esc_attr( $opens ); ?>">
+				<input type="time" name="gcp_schema_settings[opening_hours][<?php echo esc_attr( $day ); ?>][opens]" value="<?php echo esc_attr( $opens ); ?>">
 				<span>&ndash;</span>
-				<input type="time" name="gcsg_settings[opening_hours][<?php echo esc_attr( $day ); ?>][closes]" value="<?php echo esc_attr( $closes ); ?>">
+				<input type="time" name="gcp_schema_settings[opening_hours][<?php echo esc_attr( $day ); ?>][closes]" value="<?php echo esc_attr( $closes ); ?>">
 				<label>
-					<input type="checkbox" name="gcsg_settings[opening_hours][<?php echo esc_attr( $day ); ?>][closed]" value="1">
-					<?php echo esc_html__( 'Closed', 'gc-schema-generator' ); ?>
+					<input type="checkbox" name="gcp_schema_settings[opening_hours][<?php echo esc_attr( $day ); ?>][closed]" value="1">
+					<?php echo esc_html__( 'Closed', 'gcp-schema-generator' ); ?>
 				</label>
 			</p>
 		<?php endforeach; ?>
-		<p class="description"><?php echo esc_html__( 'Leave a day blank or mark it Closed to omit it from the schema.', 'gc-schema-generator' ); ?></p>
+		<p class="description"><?php echo esc_html__( 'Leave a day blank or mark it Closed to omit it from the schema.', 'gcp-schema-generator' ); ?></p>
 	</div>
 	<?php
 }

@@ -2,7 +2,7 @@
 /**
  * Schema.org enum helpers.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string Full schema.org Day IRI, or '' for any unknown input.
  */
-function gcsg_schema_day_iri( $day ) {
+function gcp_schema_schema_day_iri( $day ) {
 	$map = array(
 		'Monday'    => 'https://schema.org/Monday',
 		'Tuesday'   => 'https://schema.org/Tuesday',

@@ -1,6 +1,6 @@
 <?php
 /**
- * RED behavioral tests for gcsg_build_dealer_node() and gcsg_schema_day_iri().
+ * RED behavioral tests for gcp_schema_build_dealer_node() and gcp_schema_schema_day_iri().
  *
  * Wave-0 (TDD RED): the builder/enum functions DO NOT EXIST yet, so this test
  * exits 1 (RED). It locks the dealer-node contract — BIZ-01, D-01 (multi-type),
@@ -11,7 +11,7 @@
  * Standalone (no PHPUnit): run with `php tests/schema/test-dealer-node.php`.
  * Exit code 0 = all pass, 1 = a failure.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -22,7 +22,7 @@ require_once $root . '/tests/wp-stubs.php';
 $failures = array();
 $tests    = 0;
 
-function gcsg_assert( $cond, $message, &$tests, &$failures ) {
+function gcp_schema_assert( $cond, $message, &$tests, &$failures ) {
 	$tests++;
 	if ( ! $cond ) {
 		$failures[] = $message;
@@ -50,13 +50,13 @@ foreach (
 }
 
 // --- RED guard: the test stays RED (exit 1) until these functions are defined. ---
-gcsg_assert( function_exists( 'gcsg_build_dealer_node' ), 'gcsg_build_dealer_node is defined', $tests, $failures );
-gcsg_assert( function_exists( 'gcsg_schema_day_iri' ), 'gcsg_schema_day_iri is defined', $tests, $failures );
+gcp_schema_assert( function_exists( 'gcp_schema_build_dealer_node' ), 'gcp_schema_build_dealer_node is defined', $tests, $failures );
+gcp_schema_assert( function_exists( 'gcp_schema_schema_day_iri' ), 'gcp_schema_schema_day_iri is defined', $tests, $failures );
 
-$have_builder = function_exists( 'gcsg_build_dealer_node' );
-$have_iri     = function_exists( 'gcsg_schema_day_iri' );
+$have_builder = function_exists( 'gcp_schema_build_dealer_node' );
+$have_iri     = function_exists( 'gcp_schema_schema_day_iri' );
 
-// Full-settings fixture — literal 17-key array matching the gcsg_get_settings contract.
+// Full-settings fixture — literal 17-key array matching the gcp_schema_get_settings contract.
 $full = array(
 	'name'                  => 'Demo Motors',
 	'legal_name'            => 'Demo Motors Inc.',
@@ -84,8 +84,8 @@ $full = array(
 );
 
 // --- BIZ-01 / D-01: multi-type @type array ---
-$node = $have_builder ? gcsg_build_dealer_node( $full ) : array();
-gcsg_assert(
+$node = $have_builder ? gcp_schema_build_dealer_node( $full ) : array();
+gcp_schema_assert(
 	$have_builder && isset( $node['@type'] ) && array( 'AutoDealer', 'LocalBusiness' ) === $node['@type'],
 	'D-01: @type === ["AutoDealer","LocalBusiness"]',
 	$tests,
@@ -93,7 +93,7 @@ gcsg_assert(
 );
 
 // --- BIZ-01: name present ---
-gcsg_assert(
+gcp_schema_assert(
 	$have_builder && isset( $node['name'] ) && 'Demo Motors' === $node['name'],
 	'BIZ-01: node has name',
 	$tests,
@@ -102,7 +102,7 @@ gcsg_assert(
 
 // --- BIZ-01: PostalAddress with all 5 address keys ---
 $addr = isset( $node['address'] ) && is_array( $node['address'] ) ? $node['address'] : array();
-gcsg_assert(
+gcp_schema_assert(
 	$have_builder
 		&& isset( $addr['@type'] ) && 'PostalAddress' === $addr['@type']
 		&& isset( $addr['streetAddress'], $addr['addressLocality'], $addr['addressRegion'], $addr['postalCode'], $addr['addressCountry'] ),
@@ -111,10 +111,10 @@ gcsg_assert(
 	$failures
 );
 
-// --- OUT-04: @id === gcsg_schema_id('Organization') ---
-gcsg_assert(
-	$have_builder && isset( $node['@id'] ) && gcsg_schema_id( 'Organization' ) === $node['@id'],
-	'OUT-04: @id === gcsg_schema_id("Organization")',
+// --- OUT-04: @id === gcp_schema_schema_id('Organization') ---
+gcp_schema_assert(
+	$have_builder && isset( $node['@id'] ) && gcp_schema_schema_id( 'Organization' ) === $node['@id'],
+	'OUT-04: @id === gcp_schema_schema_id("Organization")',
 	$tests,
 	$failures
 );
@@ -122,8 +122,8 @@ gcsg_assert(
 // --- D-06 suppression: empty name → array() ---
 $no_name         = $full;
 $no_name['name'] = '';
-gcsg_assert(
-	$have_builder && array() === gcsg_build_dealer_node( $no_name ),
+gcp_schema_assert(
+	$have_builder && array() === gcp_schema_build_dealer_node( $no_name ),
 	'D-06: empty name → builder returns array()',
 	$tests,
 	$failures
@@ -132,8 +132,8 @@ gcsg_assert(
 // --- D-06 suppression: missing postal_code (one of 6 required) → array() ---
 $no_postal                = $full;
 $no_postal['postal_code'] = '';
-gcsg_assert(
-	$have_builder && array() === gcsg_build_dealer_node( $no_postal ),
+gcp_schema_assert(
+	$have_builder && array() === gcp_schema_build_dealer_node( $no_postal ),
 	'D-06: missing postal_code → builder returns array()',
 	$tests,
 	$failures
@@ -159,8 +159,8 @@ $minimal = array(
 	'currency'              => '',
 	'financing_description' => '',
 );
-$min_node = $have_builder ? gcsg_build_dealer_node( $minimal ) : array();
-gcsg_assert(
+$min_node = $have_builder ? gcp_schema_build_dealer_node( $minimal ) : array();
+gcp_schema_assert(
 	$have_builder
 		&& ! array_key_exists( 'telephone', $min_node )
 		&& ! array_key_exists( 'logo', $min_node )
@@ -177,7 +177,7 @@ gcsg_assert(
 $specs = isset( $node['openingHoursSpecification'] ) && is_array( $node['openingHoursSpecification'] )
 	? $node['openingHoursSpecification']
 	: array();
-gcsg_assert(
+gcp_schema_assert(
 	$have_builder && 1 === count( $specs ),
 	'D-04: Mon–Fri identical hours collapse to ONE spec',
 	$tests,
@@ -190,7 +190,7 @@ $expected_days = array(
 	'https://schema.org/Thursday',
 	'https://schema.org/Friday',
 );
-gcsg_assert(
+gcp_schema_assert(
 	$have_builder && isset( $specs[0]['dayOfWeek'] ) && $expected_days === $specs[0]['dayOfWeek'],
 	'D-05: dayOfWeek is the 5-element full-IRI array Monday..Friday',
 	$tests,
@@ -203,9 +203,9 @@ $two_groups['opening_hours'] = array_merge(
 	$full['opening_hours'],
 	array( array( 'day' => 'Saturday', 'opens' => '10:00', 'closes' => '14:00' ) )
 );
-$two_node  = $have_builder ? gcsg_build_dealer_node( $two_groups ) : array();
+$two_node  = $have_builder ? gcp_schema_build_dealer_node( $two_groups ) : array();
 $two_specs = isset( $two_node['openingHoursSpecification'] ) ? $two_node['openingHoursSpecification'] : array();
-gcsg_assert(
+gcp_schema_assert(
 	$have_builder && 2 === count( $two_specs ),
 	'D-04: a second hours group produces a SECOND spec',
 	$tests,
@@ -221,34 +221,34 @@ $noncontig['opening_hours'] = array(
 	array( 'day' => 'Thursday',  'opens' => '11:00', 'closes' => '15:00' ),
 	array( 'day' => 'Friday',    'opens' => '09:00', 'closes' => '18:00' ),
 );
-$nc_node  = $have_builder ? gcsg_build_dealer_node( $noncontig ) : array();
+$nc_node  = $have_builder ? gcp_schema_build_dealer_node( $noncontig ) : array();
 $nc_specs = isset( $nc_node['openingHoursSpecification'] ) ? $nc_node['openingHoursSpecification'] : array();
 $nc_first_days = ( isset( $nc_specs[0]['dayOfWeek'] ) && is_array( $nc_specs[0]['dayOfWeek'] ) )
 	? $nc_specs[0]['dayOfWeek']
 	: array();
-gcsg_assert(
+gcp_schema_assert(
 	$have_builder && 2 === count( $nc_specs ) && 3 === count( $nc_first_days ),
 	'D-04: non-contiguous same-hours days collapse (3-element dayOfWeek)',
 	$tests,
 	$failures
 );
 
-// --- D-05: gcsg_schema_day_iri mapping + unknown → '' ---
-gcsg_assert(
-	$have_iri && 'https://schema.org/Monday' === gcsg_schema_day_iri( 'Monday' ),
-	'D-05: gcsg_schema_day_iri("Monday") === https://schema.org/Monday',
+// --- D-05: gcp_schema_schema_day_iri mapping + unknown → '' ---
+gcp_schema_assert(
+	$have_iri && 'https://schema.org/Monday' === gcp_schema_schema_day_iri( 'Monday' ),
+	'D-05: gcp_schema_schema_day_iri("Monday") === https://schema.org/Monday',
 	$tests,
 	$failures
 );
-gcsg_assert(
-	$have_iri && '' === gcsg_schema_day_iri( 'Notaday' ),
-	'D-05: gcsg_schema_day_iri(unknown) === ""',
+gcp_schema_assert(
+	$have_iri && '' === gcp_schema_schema_day_iri( 'Notaday' ),
+	'D-05: gcp_schema_schema_day_iri(unknown) === ""',
 	$tests,
 	$failures
 );
 
 // --- D-08 honesty: encoded node never contains aggregateRating ---
-gcsg_assert(
+gcp_schema_assert(
 	$have_builder && false === strpos( (string) json_encode( $node ), 'aggregateRating' ),
 	'D-08: node JSON contains no aggregateRating',
 	$tests,

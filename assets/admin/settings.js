@@ -1,6 +1,6 @@
 /* GC Schema Generator — settings screen media picker. @author Gabriel Coronado */
 jQuery(function ($) {
-    $(document).on('click', '.gcsg-media-pick', function (e) {
+    $(document).on('click', '.gcp-schema-media-pick', function (e) {
         e.preventDefault();
         var $input = $($(this).data('target'));
         var frame = wp.media({
@@ -14,7 +14,7 @@ jQuery(function ($) {
         });
         frame.open();
     });
-    $(document).on('click', '.gcsg-media-remove', function (e) {
+    $(document).on('click', '.gcp-schema-media-remove', function (e) {
         e.preventDefault();
         $($(this).data('target')).val('').trigger('change');
     });

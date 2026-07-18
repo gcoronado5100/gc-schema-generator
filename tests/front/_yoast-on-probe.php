@@ -1,6 +1,6 @@
 <?php
 /**
- * Sub-process probe: Yoast ACTIVE → gcsg_output_schema() must emit nothing (D-09).
+ * Sub-process probe: Yoast ACTIVE → gcp_schema_output_schema() must emit nothing (D-09).
  *
  * Run in isolation by test-output-schema.php via shell_exec so that defining
  * WPSEO_VERSION here does NOT poison the parent test process (a defined constant
@@ -10,11 +10,11 @@
  * The leading underscore keeps this file OUT of the suite's `test-*.php` glob.
  *
  * RED tolerance: when the Phase-3 production functions do not yet exist, the
- * guarded gcsg_output_schema() call is skipped and the probe echoes 'EMPTY' —
+ * guarded gcp_schema_output_schema() call is skipped and the probe echoes 'EMPTY' —
  * the documented RED default. The parent's happy-path/D-07 probes are what fail
  * RED; this gate-probe stays neutral so it never masks them.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -30,7 +30,7 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 // Front-end, non-admin; full settings so any missing gate would emit a node.
 $GLOBALS['__wp_is_admin']                   = false;
 $GLOBALS['__wp_is_front_page']              = true;
-$GLOBALS['__wp_options']['gcsg_settings']   = array(
+$GLOBALS['__wp_options']['gcp_schema_settings']   = array(
 	'name'                  => 'Demo Motors',
 	'legal_name'            => '',
 	'logo'                  => '',
@@ -70,9 +70,9 @@ foreach (
 	}
 }
 
-if ( function_exists( 'gcsg_output_schema' ) ) {
+if ( function_exists( 'gcp_schema_output_schema' ) ) {
 	ob_start();
-	gcsg_output_schema();
+	gcp_schema_output_schema();
 	$out = ob_get_clean();
 	echo '' === $out ? 'EMPTY' : 'NONEMPTY';
 } else {

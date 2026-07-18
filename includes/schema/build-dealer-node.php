@@ -2,7 +2,7 @@
 /**
  * AutoDealer/LocalBusiness node builder.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -16,8 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Pure array builder: receives the sanitized 17-key settings array from the
  * caller (no get_option for settings, no echo), composes over the already-tested
- * primitives gcsg_schema_id() and gcsg_schema_day_iri(), and returns a node
- * array ready for gcsg_assemble_graph().
+ * primitives gcp_schema_schema_id() and gcp_schema_schema_day_iri(), and returns a node
+ * array ready for gcp_schema_assemble_graph().
  *
  * Honesty rules:
  *  - D-06 suppression: missing name OR any required address field → array().
@@ -27,17 +27,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Structure:
  *  - D-01 multi-type @type ['AutoDealer','LocalBusiness'].
- *  - OUT-04 stable @id === gcsg_schema_id('Organization').
+ *  - OUT-04 stable @id === gcp_schema_schema_id('Organization').
  *  - D-04/D-05 opening_hours rows grouped by identical (opens,closes) into one
  *    OpeningHoursSpecification per group, each with a dayOfWeek array of full IRIs.
  *
  * @since feat/new_inventory_plugin_gc
  *
- * @param array $s Sanitized settings (gcsg_get_settings() contract shape).
+ * @param array $s Sanitized settings (gcp_schema_get_settings() contract shape).
  *
  * @return array Dealer node, or array() when the required fields are not all set.
  */
-function gcsg_build_dealer_node( array $s ) {
+function gcp_schema_build_dealer_node( array $s ) {
 	// 1. D-06 required gate — strict 6 (Open Question #2 resolved to this subset).
 	$required = array( 'name', 'street_address', 'address_locality', 'address_region', 'postal_code', 'address_country' );
 	foreach ( $required as $req ) {
@@ -49,7 +49,7 @@ function gcsg_build_dealer_node( array $s ) {
 	// 2. Base node.
 	$node = array(
 		'@type'   => array( 'AutoDealer', 'LocalBusiness' ),
-		'@id'     => gcsg_schema_id( 'Organization' ),
+		'@id'     => gcp_schema_schema_id( 'Organization' ),
 		'name'    => wp_strip_all_tags( $s['name'] ),
 		'url'     => home_url( '/' ),
 		'address' => array(
@@ -99,7 +99,7 @@ function gcsg_build_dealer_node( array $s ) {
 		if ( empty( $row['day'] ) || empty( $row['opens'] ) || empty( $row['closes'] ) ) {
 			continue;
 		}
-		$iri = gcsg_schema_day_iri( $row['day'] );
+		$iri = gcp_schema_schema_day_iri( $row['day'] );
 		if ( '' === $iri ) {
 			continue;
 		}

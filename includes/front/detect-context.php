@@ -2,7 +2,7 @@
 /**
  * Front-end page-context classifier.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * IMPORTANT: this classifier does NOT decide whether the dealer node emits.
  * Per D-02 the AutoDealer/LocalBusiness node emits sitewide across all three
- * contexts; the orchestrator (gcsg_output_schema) calls this only to classify
+ * contexts; the orchestrator (gcp_schema_output_schema) calls this only to classify
  * the page for the breadcrumb (Phase 4) and vehicle (Phase 6) work that will
  * key off the return value. Edge pages (search results, 404, archives) fall
  * through to 'other' for now — refined in Phase 4/6 (Open Question #3).
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string One of 'front', 'listing', or 'other'.
  */
-function gcsg_detect_context() {
+function gcp_schema_detect_context() {
 	if ( function_exists( 'is_front_page' ) && is_front_page() ) {
 		return 'front';
 	}

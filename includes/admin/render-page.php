@@ -1,8 +1,8 @@
 <?php
 /**
- * Settings page renderer (the top-level menu callback).
+ * Settings page renderer (the GabeCode sub-page callback).
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -12,25 +12,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Render the dealer-identity settings page via the WordPress Settings API.
+ * Render the dealer-identity settings page.
  *
- * The render callback for the top-level menu. It re-checks the capability, shows
- * a persistent D-09 warning notice when the business name or any required address
- * part is empty (save still succeeds — no hard server-side block), then prints the
- * Settings API form posting to options.php. Nonce and option-group hidden fields
- * come from settings_fields(), and the 6 sections/field groups render through
- * do_settings_sections() — all security is delegated to the Settings API (D-10).
+ * When the GabeCode hub is active the page renders inside the shared shell
+ * (branded banner + tab nav + shadcn cards) using the hub's card renderer;
+ * otherwise it falls back to the plain WordPress Settings API layout. Either
+ * way it re-checks the capability, shows a warning notice when the business
+ * name or a required address part is empty (save still succeeds), and posts the
+ * Settings API form to options.php (all security delegated to the Settings API).
  *
  * @since feat/new_inventory_plugin_gc
  *
  * @return void
  */
-function gcsg_render_settings_page() {
+function gcp_schema_render_settings_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
 
-	$s = gcsg_get_settings();
+	$s = gcp_schema_get_settings();
 
 	$addr_ok = '' !== $s['street_address']
 		&& '' !== $s['address_locality']
@@ -38,18 +38,27 @@ function gcsg_render_settings_page() {
 		&& '' !== $s['postal_code']
 		&& '' !== $s['address_country'];
 
-	if ( '' === $s['name'] || ! $addr_ok ) {
+	$incomplete = ( '' === $s['name'] || ! $addr_ok );
+
+	// Hard dependency: this callback only runs when the hub is active (the boot
+	// gate registers it only then), so we always render inside the shell.
+	gcp_admin_open( 'gcp-schema' );
+
+	if ( $incomplete ) {
 		echo '<div class="notice notice-warning"><p>'
-			. esc_html__( "Dealer schema won't be emitted until both Business name and a complete address are filled in.", 'gc-schema-generator' )
+			. esc_html__( "Dealer schema won't be emitted until both Business name and a complete address are filled in.", 'gcp-schema-generator' )
 			. '</p></div>';
 	}
 
-	echo '<div class="wrap">';
-	echo '<h1>' . esc_html__( 'Schema Generator', 'gc-schema-generator' ) . '</h1>';
-	echo '<form method="post" action="options.php">';
-	settings_fields( 'gcsg' );      // Nonce + option-group hidden fields.
-	do_settings_sections( 'gcsg' ); // Renders the 6 sections + their field groups.
-	submit_button();                // "Save Changes".
-	echo '</form>';
+	echo '<form method="post" action="options.php" class="gcp-form">';
+	settings_fields( 'gcp_schema' ); // Nonce + option-group hidden fields.
+	echo '<div class="gcp-grid">';
+	gcp_render_settings_cards( 'gcp_schema' ); // 6 sections → cards.
 	echo '</div>';
+	echo '<div class="gcp-actions">';
+	submit_button( __( 'Save changes', 'gcp-schema-generator' ), 'primary', 'submit', false );
+	echo '</div>';
+	echo '</form>';
+
+	gcp_admin_close();
 }

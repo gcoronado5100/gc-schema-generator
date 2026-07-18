@@ -2,7 +2,7 @@
 /**
  * Motors (STM) inventory presence guard.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -28,6 +28,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return bool True when Motors inventory is present, false otherwise.
  */
-function gcsg_has_motors() {
+function gcp_schema_has_motors() {
 	return post_type_exists( 'listings' ) || (bool) get_option( 'stm_vehicle_listing_options', false );
 }

@@ -2,7 +2,7 @@
 /**
  * Settings accessor helper.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * The entire plugin reads dealer-identity configuration through this single
  * accessor. It returns an associative array that always contains every expected
- * key with a safe default, even when the `gcsg_settings` option does not yet
+ * key with a safe default, even when the `gcp_schema_settings` option does not yet
  * exist (it is created by the Phase 2 settings page). Saved values win over
  * defaults; missing keys fall back to defaults.
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return array Dealer-identity settings merged over defaults.
  */
-function gcsg_get_settings() {
+function gcp_schema_get_settings() {
 	static $cache = null;
 
 	if ( null !== $cache ) {
@@ -57,7 +57,7 @@ function gcsg_get_settings() {
 		'financing_description' => '',
 	);
 
-	$saved = get_option( 'gcsg_settings', array() );
+	$saved = get_option( 'gcp_schema_settings', array() );
 	$cache = wp_parse_args( is_array( $saved ) ? $saved : array(), $defaults );
 
 	return $cache;

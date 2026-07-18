@@ -2,7 +2,7 @@
 /**
  * Opening-hours time normalizer.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param mixed $value Raw time value from the settings form.
  * @return string A normalized `HH:MM` string, or '' when invalid.
  */
-function gcsg_normalize_time( $value ) {
+function gcp_schema_normalize_time( $value ) {
 	$value = trim( (string) $value );
 
 	return preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $value ) ? $value : '';

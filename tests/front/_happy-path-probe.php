@@ -4,7 +4,7 @@
  * AutoDealer node in @graph (OUT-03 happy path).
  *
  * Run in isolation by test-output-schema.php via shell_exec to sidestep the
- * gcsg_get_settings() per-process static cache. Echoes a compact verdict line
+ * gcp_schema_get_settings() per-process static cache. Echoes a compact verdict line
  * the parent asserts on:
  *   'OK'      — exactly one <script type="application/ld+json"> whose JSON
  *               decodes to a graph containing an AutoDealer node.
@@ -12,7 +12,7 @@
  *
  * The leading underscore keeps this file OUT of the suite's `test-*.php` glob.
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -23,7 +23,7 @@ require_once $root . '/tests/wp-stubs.php';
 // Yoast OFF (constant undefined), front-end, non-admin, full settings.
 $GLOBALS['__wp_is_admin']                 = false;
 $GLOBALS['__wp_is_front_page']            = true;
-$GLOBALS['__wp_options']['gcsg_settings'] = array(
+$GLOBALS['__wp_options']['gcp_schema_settings'] = array(
 	'name'                  => 'Demo Motors',
 	'legal_name'            => 'Demo Motors Inc.',
 	'logo'                  => 'https://example.com/logo.png',
@@ -64,13 +64,13 @@ foreach (
 	}
 }
 
-if ( ! function_exists( 'gcsg_output_schema' ) ) {
+if ( ! function_exists( 'gcp_schema_output_schema' ) ) {
 	echo 'RED'; // function not built yet — parent's happy-path assertion fails (intended).
 	return;
 }
 
 ob_start();
-gcsg_output_schema();
+gcp_schema_output_schema();
 $out = ob_get_clean();
 
 // Exactly one opening script tag.

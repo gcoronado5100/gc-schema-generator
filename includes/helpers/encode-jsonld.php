@@ -2,7 +2,7 @@
 /**
  * JSON-LD encode helper — the single encode point (D-11).
  *
- * @package GC_Schema_Generator
+ * @package GCP_Schema_Generator
  * @author  Gabriel Coronado
  * @since   feat/new_inventory_plugin_gc
  */
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * tooling expects.
  *
  * Note on safety: free-text values (name, addresses, etc.) are HTML-stripped
- * by gcsg_build_dealer_node() BEFORE they reach here, so this function is
+ * by gcp_schema_build_dealer_node() BEFORE they reach here, so this function is
  * responsible only for JSON escaping — never for sanitizing markup.
  *
  * @since feat/new_inventory_plugin_gc
@@ -30,6 +30,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string JSON-LD string with slashes and unicode left unescaped.
  */
-function gcsg_encode_jsonld( array $graph ) {
+function gcp_schema_encode_jsonld( array $graph ) {
 	return wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 }
