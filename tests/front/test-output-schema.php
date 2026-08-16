@@ -46,6 +46,7 @@ function gcp_schema_assert( $cond, $message, &$tests, &$failures ) {
 foreach (
 	array(
 		$root . '/includes/helpers/get-settings.php',
+		$root . '/includes/helpers/vehicle-post-type.php',
 		$root . '/includes/helpers/schema-id.php',
 		$root . '/includes/helpers/is-yoast-active.php',
 		$root . '/includes/helpers/schema-enums.php',
@@ -76,10 +77,10 @@ gcp_schema_assert(
 );
 
 $GLOBALS['__wp_is_front_page'] = false;
-$GLOBALS['__wp_is_singular']   = 'listings';
+$GLOBALS['__wp_is_singular']   = 'vehicle';
 gcp_schema_assert(
-	function_exists( 'gcp_schema_detect_context' ) && gcp_schema_detect_context() === 'listing',
-	"detect-context: is_singular('listings') → 'listing'",
+	function_exists( 'gcp_schema_detect_context' ) && gcp_schema_detect_context() === 'vehicle',
+	"detect-context: is_singular('vehicle') → 'vehicle'",
 	$tests,
 	$failures
 );
