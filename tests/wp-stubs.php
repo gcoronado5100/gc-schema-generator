@@ -233,6 +233,32 @@ if ( ! function_exists( 'is_singular' ) ) {
 	}
 }
 
+if ( ! function_exists( 'is_search' ) ) {
+	function is_search() {
+		return ! empty( $GLOBALS['__wp_is_search'] );
+	}
+}
+
+if ( ! function_exists( 'is_404' ) ) {
+	function is_404() {
+		return ! empty( $GLOBALS['__wp_is_404'] );
+	}
+}
+
+if ( ! function_exists( 'is_tax' ) ) {
+	// $GLOBALS['__wp_is_tax'] holds the current taxonomy string (or false).
+	function is_tax( $taxonomy = '' ) {
+		$current = isset( $GLOBALS['__wp_is_tax'] ) ? $GLOBALS['__wp_is_tax'] : false;
+		if ( empty( $current ) ) {
+			return false;
+		}
+		if ( '' === $taxonomy ) {
+			return true;
+		}
+		return in_array( $current, (array) $taxonomy, true );
+	}
+}
+
 if ( ! function_exists( 'get_post_meta' ) ) {
 	function get_post_meta( $post_id, $key = '', $single = false ) {
 		$value = isset( $GLOBALS['__wp_post_meta'][ $post_id ][ $key ] )

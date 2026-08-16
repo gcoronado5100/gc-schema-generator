@@ -139,5 +139,23 @@ gcp_schema_assert(
 	$failures
 );
 
+// Mode B context-aware: vehicle single → dealer + Product/Car, seller @id matches.
+$vehicle_out = shell_exec( $php . ' ' . escapeshellarg( $root . '/tests/front/_vehicle-single-probe.php' ) );
+gcp_schema_assert(
+	'OK' === trim( (string) $vehicle_out ),
+	'Mode B: vehicle single → dealer + Product/Car nodes, seller.@id === dealer @id',
+	$tests,
+	$failures
+);
+
+// Suppression: noindex vehicle taxonomy archive → nothing at all.
+$tax_out = shell_exec( $php . ' ' . escapeshellarg( $root . '/tests/front/_suppress-tax-archive-probe.php' ) );
+gcp_schema_assert(
+	'EMPTY' === trim( (string) $tax_out ),
+	'Suppression: vehicle taxonomy archive (noindex) → no schema output',
+	$tests,
+	$failures
+);
+
 echo "\n$tests assertions, " . count( $failures ) . " failures\n";
 exit( empty( $failures ) ? 0 : 1 );
