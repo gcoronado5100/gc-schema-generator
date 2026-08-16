@@ -70,6 +70,7 @@ foreach (
 		'/includes/helpers/is-yoast-active.php',
 		'/includes/helpers/schema-enums.php',
 		'/includes/helpers/encode-jsonld.php',
+		'/includes/schema/build-dealer-parts.php',
 		'/includes/schema/build-dealer-node.php',
 		'/includes/schema/assemble-graph.php',
 		'/includes/front/detect-context.php',

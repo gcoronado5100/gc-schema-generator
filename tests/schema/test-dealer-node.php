@@ -41,6 +41,7 @@ require_once $root . '/includes/helpers/schema-id.php';
 foreach (
 	array(
 		$root . '/includes/helpers/schema-enums.php',
+		$root . '/includes/schema/build-dealer-parts.php',
 		$root . '/includes/schema/build-dealer-node.php',
 	) as $f
 ) {

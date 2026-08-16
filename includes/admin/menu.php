@@ -47,8 +47,13 @@ function gcp_schema_boot() {
 	add_action( 'admin_init',            'gcp_schema_register_settings' );
 	add_action( 'admin_enqueue_scripts', 'gcp_schema_admin_enqueue' );
 
-	// Front-end JSON-LD output.
+	// Front-end JSON-LD output (Mode B — self-emitted when Yoast is absent).
 	add_action( 'wp_head', 'gcp_schema_output_schema', 99 );
+
+	// Mode A — stitch into Yoast's graph. Registered unconditionally: the
+	// filter simply never fires when Yoast is inactive, and Mode B's own
+	// Yoast early-return guarantees single emission either way.
+	add_filter( 'wpseo_schema_graph', 'gcp_schema_filter_yoast_graph', 20, 2 );
 }
 
 /**
