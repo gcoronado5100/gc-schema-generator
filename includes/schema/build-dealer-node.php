@@ -46,20 +46,13 @@ function gcp_schema_build_dealer_node( array $s ) {
 		}
 	}
 
-	// 2. Base node.
+	// 2. Base node. The address gate above guarantees the sub-builder is non-empty.
 	$node = array(
 		'@type'   => array( 'AutoDealer', 'LocalBusiness' ),
 		'@id'     => gcp_schema_schema_id( 'Organization' ),
 		'name'    => wp_strip_all_tags( $s['name'] ),
 		'url'     => home_url( '/' ),
-		'address' => array(
-			'@type'           => 'PostalAddress',
-			'streetAddress'   => wp_strip_all_tags( $s['street_address'] ),
-			'addressLocality' => wp_strip_all_tags( $s['address_locality'] ),
-			'addressRegion'   => wp_strip_all_tags( $s['address_region'] ),
-			'postalCode'      => wp_strip_all_tags( $s['postal_code'] ),
-			'addressCountry'  => wp_strip_all_tags( $s['address_country'] ),
-		),
+		'address' => gcp_schema_build_postal_address( $s ),
 	);
 
 	// 3. Optional scalars — key ONLY when non-empty (D-06 omit).
@@ -80,48 +73,13 @@ function gcp_schema_build_dealer_node( array $s ) {
 	}
 
 	// geo: only when BOTH latitude and longitude are non-empty.
-	if (
-		isset( $s['latitude'], $s['longitude'] )
-		&& '' !== trim( (string) $s['latitude'] )
-		&& '' !== trim( (string) $s['longitude'] )
-	) {
-		$node['geo'] = array(
-			'@type'     => 'GeoCoordinates',
-			'latitude'  => (float) $s['latitude'],
-			'longitude' => (float) $s['longitude'],
-		);
+	$geo = gcp_schema_build_geo( $s );
+	if ( ! empty( $geo ) ) {
+		$node['geo'] = $geo;
 	}
 
 	// 4. Opening hours (D-04 grouping by identical opens|closes).
-	$rows   = isset( $s['opening_hours'] ) && is_array( $s['opening_hours'] ) ? $s['opening_hours'] : array();
-	$groups = array();
-	foreach ( $rows as $row ) {
-		if ( empty( $row['day'] ) || empty( $row['opens'] ) || empty( $row['closes'] ) ) {
-			continue;
-		}
-		$iri = gcp_schema_schema_day_iri( $row['day'] );
-		if ( '' === $iri ) {
-			continue;
-		}
-		$key = $row['opens'] . '|' . $row['closes'];
-		if ( ! isset( $groups[ $key ] ) ) {
-			$groups[ $key ] = array(
-				'opens'  => $row['opens'],
-				'closes' => $row['closes'],
-				'days'   => array(),
-			);
-		}
-		$groups[ $key ]['days'][] = $iri;
-	}
-	$specs = array();
-	foreach ( $groups as $g ) {
-		$specs[] = array(
-			'@type'     => 'OpeningHoursSpecification',
-			'dayOfWeek' => $g['days'], // Always an array; single-day groups are 1-element (uniform, valid).
-			'opens'     => $g['opens'],
-			'closes'    => $g['closes'],
-		);
-	}
+	$specs = gcp_schema_build_hours_specs( $s );
 	if ( ! empty( $specs ) ) {
 		$node['openingHoursSpecification'] = $specs;
 	}
@@ -152,6 +110,12 @@ function gcp_schema_build_dealer_node( array $s ) {
 		$node['sameAs'] = $urls;
 	}
 
-	// 6. Return — NEVER add a fabricated rating/review aggregate (D-08).
+	// 6. Financing (BIZ-02): makesOffer → LoanOrCredit, only when the setting is filled.
+	$financing = gcp_schema_build_financing_offer( $s );
+	if ( ! empty( $financing ) ) {
+		$node['makesOffer'] = $financing;
+	}
+
+	// 7. Return — NEVER add a fabricated rating/review aggregate (D-08).
 	return $node;
 }

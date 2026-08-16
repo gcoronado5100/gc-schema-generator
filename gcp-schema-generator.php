@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       GabeCode Schema Generator
  * Plugin URI:        https://every1drives.com/
- * Description:       GabeCode Plus add-on. Emits deterministic Schema.org JSON-LD (AutoDealer + Product/Offer); yields to Yoast when present and degrades gracefully without Motors.
- * Version:           0.1.0
+ * Description:       GabeCode Plus add-on. Emits deterministic Schema.org JSON-LD (AutoDealer + per-vehicle Product/Car + Offer); stitches into Yoast's graph when present and degrades gracefully without inventory.
+ * Version:           1.0.0
  * Author:            Gabriel Coronado
  * Author URI:        https://gabecode.com/about-me/
  * License:           GPL-2.0-or-later
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GCP_SCHEMA_VERSION', '0.1.0' );
+define( 'GCP_SCHEMA_VERSION', '1.0.0' );
 define( 'GCP_SCHEMA_PLUGIN_FILE', __FILE__ );
 define( 'GCP_SCHEMA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GCP_SCHEMA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

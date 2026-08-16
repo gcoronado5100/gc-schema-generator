@@ -42,6 +42,28 @@ if ( ! isset( $GLOBALS['__wp_is_singular'] ) ) {
 if ( ! isset( $GLOBALS['__wp_yoast_active'] ) ) {
 	$GLOBALS['__wp_yoast_active'] = false;
 }
+// Vehicle-data fixtures (Phase 2 inventory resolver tests). Keyed by post ID.
+if ( ! isset( $GLOBALS['__wp_post_meta'] ) ) {
+	$GLOBALS['__wp_post_meta'] = array(); // [post_id][meta_key] => value.
+}
+if ( ! isset( $GLOBALS['__wp_terms'] ) ) {
+	$GLOBALS['__wp_terms'] = array(); // [post_id][taxonomy] => array of (object) ['name' => ...].
+}
+if ( ! isset( $GLOBALS['__wp_posts'] ) ) {
+	$GLOBALS['__wp_posts'] = array(); // [post_id] => (object) ['post_content' => ...].
+}
+if ( ! isset( $GLOBALS['__wp_titles'] ) ) {
+	$GLOBALS['__wp_titles'] = array(); // [post_id] => title string.
+}
+if ( ! isset( $GLOBALS['__wp_permalinks'] ) ) {
+	$GLOBALS['__wp_permalinks'] = array(); // [post_id] => URL string.
+}
+if ( ! isset( $GLOBALS['__wp_thumbnails'] ) ) {
+	$GLOBALS['__wp_thumbnails'] = array(); // [post_id] => featured image URL (or unset).
+}
+if ( ! isset( $GLOBALS['__wp_attachment_urls'] ) ) {
+	$GLOBALS['__wp_attachment_urls'] = array(); // [attachment_id] => URL (unset = dead ID).
+}
 
 if ( ! function_exists( 'get_option' ) ) {
 	function get_option( $name, $default = false ) {
@@ -208,6 +230,97 @@ if ( ! function_exists( 'is_singular' ) ) {
 	function is_singular( $type = '' ) {
 		return ! empty( $GLOBALS['__wp_is_singular'] )
 			&& ( '' === $type || $GLOBALS['__wp_is_singular'] === $type );
+	}
+}
+
+if ( ! function_exists( 'is_search' ) ) {
+	function is_search() {
+		return ! empty( $GLOBALS['__wp_is_search'] );
+	}
+}
+
+if ( ! function_exists( 'is_404' ) ) {
+	function is_404() {
+		return ! empty( $GLOBALS['__wp_is_404'] );
+	}
+}
+
+if ( ! function_exists( 'is_tax' ) ) {
+	// $GLOBALS['__wp_is_tax'] holds the current taxonomy string (or false).
+	function is_tax( $taxonomy = '' ) {
+		$current = isset( $GLOBALS['__wp_is_tax'] ) ? $GLOBALS['__wp_is_tax'] : false;
+		if ( empty( $current ) ) {
+			return false;
+		}
+		if ( '' === $taxonomy ) {
+			return true;
+		}
+		return in_array( $current, (array) $taxonomy, true );
+	}
+}
+
+if ( ! function_exists( 'get_post_meta' ) ) {
+	function get_post_meta( $post_id, $key = '', $single = false ) {
+		$value = isset( $GLOBALS['__wp_post_meta'][ $post_id ][ $key ] )
+			? $GLOBALS['__wp_post_meta'][ $post_id ][ $key ]
+			: '';
+		return $single ? $value : array( $value );
+	}
+}
+
+if ( ! function_exists( 'get_the_terms' ) ) {
+	function get_the_terms( $post_id, $taxonomy ) {
+		return isset( $GLOBALS['__wp_terms'][ $post_id ][ $taxonomy ] )
+			? $GLOBALS['__wp_terms'][ $post_id ][ $taxonomy ]
+			: false;
+	}
+}
+
+if ( ! function_exists( 'get_post' ) ) {
+	function get_post( $post_id ) {
+		return isset( $GLOBALS['__wp_posts'][ $post_id ] )
+			? $GLOBALS['__wp_posts'][ $post_id ]
+			: null;
+	}
+}
+
+if ( ! function_exists( 'get_the_title' ) ) {
+	function get_the_title( $post_id ) {
+		return isset( $GLOBALS['__wp_titles'][ $post_id ] )
+			? $GLOBALS['__wp_titles'][ $post_id ]
+			: '';
+	}
+}
+
+if ( ! function_exists( 'get_permalink' ) ) {
+	function get_permalink( $post_id ) {
+		return isset( $GLOBALS['__wp_permalinks'][ $post_id ] )
+			? $GLOBALS['__wp_permalinks'][ $post_id ]
+			: '';
+	}
+}
+
+if ( ! function_exists( 'get_the_post_thumbnail_url' ) ) {
+	function get_the_post_thumbnail_url( $post_id, $size = 'post-thumbnail' ) {
+		return isset( $GLOBALS['__wp_thumbnails'][ $post_id ] )
+			? $GLOBALS['__wp_thumbnails'][ $post_id ]
+			: false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_image_url' ) ) {
+	function wp_get_attachment_image_url( $attachment_id, $size = 'thumbnail' ) {
+		return isset( $GLOBALS['__wp_attachment_urls'][ $attachment_id ] )
+			? $GLOBALS['__wp_attachment_urls'][ $attachment_id ]
+			: false;
+	}
+}
+
+if ( ! function_exists( 'get_queried_object_id' ) ) {
+	function get_queried_object_id() {
+		return isset( $GLOBALS['__wp_queried_object_id'] )
+			? (int) $GLOBALS['__wp_queried_object_id']
+			: 0;
 	}
 }
 

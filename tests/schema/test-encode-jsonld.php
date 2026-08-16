@@ -80,5 +80,18 @@ gcp_schema_assert(
 	$failures
 );
 
+// Hardening: a literal </script> in any value must not survive verbatim —
+// `</` is re-escaped to `<\/` (identical parsed value, cannot close the tag).
+$xss      = gcp_schema_encode_jsonld( array( 'description' => 'evil</script><script>alert(1)</script>' ) );
+$xss_back = json_decode( $xss, true );
+gcp_schema_assert(
+	false === strpos( $xss, '</script>' )
+		&& is_array( $xss_back )
+		&& 'evil</script><script>alert(1)</script>' === $xss_back['description'],
+	'hardening: </script> in a value is escaped in output yet round-trips intact',
+	$tests,
+	$failures
+);
+
 echo "\n$tests assertions, " . count( $failures ) . " failures\n";
 exit( empty( $failures ) ? 0 : 1 );

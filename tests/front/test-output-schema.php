@@ -46,10 +46,13 @@ function gcp_schema_assert( $cond, $message, &$tests, &$failures ) {
 foreach (
 	array(
 		$root . '/includes/helpers/get-settings.php',
+		$root . '/includes/helpers/vehicle-post-type.php',
 		$root . '/includes/helpers/schema-id.php',
 		$root . '/includes/helpers/is-yoast-active.php',
 		$root . '/includes/helpers/schema-enums.php',
 		$root . '/includes/helpers/encode-jsonld.php',
+		$root . '/includes/schema/build-financing-offer.php',
+		$root . '/includes/schema/build-dealer-parts.php',
 		$root . '/includes/schema/build-dealer-node.php',
 		$root . '/includes/schema/assemble-graph.php',
 		$root . '/includes/front/detect-context.php',
@@ -76,10 +79,10 @@ gcp_schema_assert(
 );
 
 $GLOBALS['__wp_is_front_page'] = false;
-$GLOBALS['__wp_is_singular']   = 'listings';
+$GLOBALS['__wp_is_singular']   = 'vehicle';
 gcp_schema_assert(
-	function_exists( 'gcp_schema_detect_context' ) && gcp_schema_detect_context() === 'listing',
-	"detect-context: is_singular('listings') → 'listing'",
+	function_exists( 'gcp_schema_detect_context' ) && gcp_schema_detect_context() === 'vehicle',
+	"detect-context: is_singular('vehicle') → 'vehicle'",
 	$tests,
 	$failures
 );
@@ -134,6 +137,24 @@ $admin_out = shell_exec( $php . ' ' . escapeshellarg( $root . '/tests/front/_is-
 gcp_schema_assert(
 	'EMPTY' === trim( (string) $admin_out ),
 	'is_admin guard: wp-admin → gcp_schema_output_schema() emits nothing',
+	$tests,
+	$failures
+);
+
+// Mode B context-aware: vehicle single → dealer + Product/Car, seller @id matches.
+$vehicle_out = shell_exec( $php . ' ' . escapeshellarg( $root . '/tests/front/_vehicle-single-probe.php' ) );
+gcp_schema_assert(
+	'OK' === trim( (string) $vehicle_out ),
+	'Mode B: vehicle single → dealer + Product/Car nodes, seller.@id === dealer @id',
+	$tests,
+	$failures
+);
+
+// Suppression: noindex vehicle taxonomy archive → nothing at all.
+$tax_out = shell_exec( $php . ' ' . escapeshellarg( $root . '/tests/front/_suppress-tax-archive-probe.php' ) );
+gcp_schema_assert(
+	'EMPTY' === trim( (string) $tax_out ),
+	'Suppression: vehicle taxonomy archive (noindex) → no schema output',
 	$tests,
 	$failures
 );
