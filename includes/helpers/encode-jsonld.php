@@ -21,8 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * tooling expects.
  *
  * Note on safety: free-text values (name, addresses, etc.) are HTML-stripped
- * by gcp_schema_build_dealer_node() BEFORE they reach here, so this function is
- * responsible only for JSON escaping — never for sanitizing markup.
+ * by the node builders BEFORE they reach here, so this function is
+ * responsible only for JSON escaping — never for sanitizing markup. One
+ * defense stays here because only the encoder can provide it: with
+ * JSON_UNESCAPED_SLASHES a literal `</script>` inside any string value would
+ * survive encoding verbatim and terminate the inline <script> tag early, so
+ * every `</` is re-escaped to `<\/` (valid JSON, identical parsed value)
+ * regardless of which builder produced the string.
  *
  * @since feat/new_inventory_plugin_gc
  *
@@ -31,5 +36,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string JSON-LD string with slashes and unicode left unescaped.
  */
 function gcp_schema_encode_jsonld( array $graph ) {
-	return wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+	$json = wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+	return str_replace( '</', '<\/', (string) $json );
 }
