@@ -45,6 +45,7 @@ foreach (
 		'/includes/inventory/get-vehicle-term.php',
 		'/includes/inventory/get-vehicle-images.php',
 		'/includes/inventory/get-vehicle-data.php',
+		'/includes/schema/build-financing-offer.php',
 		'/includes/schema/build-dealer-parts.php',
 		'/includes/schema/build-dealer-node.php',
 		'/includes/schema/build-offer.php',
@@ -73,7 +74,8 @@ $GLOBALS['__wp_options']['gcp_schema_settings'] = array(
 	'opening_hours'    => array(
 		array( 'day' => 'Monday', 'opens' => '09:00', 'closes' => '18:00' ),
 	),
-	'currency'         => 'CAD',
+	'currency'              => 'CAD',
+	'financing_description' => 'In-house financing available.',
 );
 
 $yoast_org_id = 'https://example.com/#organization';
@@ -105,6 +107,7 @@ gcp_schema_assert( 'PostalAddress' === $org['address']['@type'] && '1 Main St' =
 gcp_schema_assert( 'GeoCoordinates' === $org['geo']['@type'], 'enrich: geo added from settings', $tests, $failures );
 gcp_schema_assert( 1 === count( $org['openingHoursSpecification'] ), 'enrich: opening hours added', $tests, $failures );
 gcp_schema_assert( '+1-555-0100' === $org['telephone'] && '$$' === $org['priceRange'], 'enrich: telephone + priceRange added', $tests, $failures );
+gcp_schema_assert( isset( $org['makesOffer']['itemOffered']['@type'] ) && 'LoanOrCredit' === $org['makesOffer']['itemOffered']['@type'], 'enrich: financing makesOffer → LoanOrCredit added (BIZ-02)', $tests, $failures );
 gcp_schema_assert( 2 === count( $out ), 'non-vehicle context: no Product node appended', $tests, $failures );
 gcp_schema_assert( 'WebSite' === $out[0]['@type'], 'other Yoast pieces pass through untouched', $tests, $failures );
 

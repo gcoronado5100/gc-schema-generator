@@ -51,6 +51,7 @@ foreach (
 		$root . '/includes/helpers/is-yoast-active.php',
 		$root . '/includes/helpers/schema-enums.php',
 		$root . '/includes/helpers/encode-jsonld.php',
+		$root . '/includes/schema/build-financing-offer.php',
 		$root . '/includes/schema/build-dealer-parts.php',
 		$root . '/includes/schema/build-dealer-node.php',
 		$root . '/includes/schema/assemble-graph.php',

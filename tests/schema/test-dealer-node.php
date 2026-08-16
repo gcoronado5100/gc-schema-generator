@@ -41,6 +41,7 @@ require_once $root . '/includes/helpers/schema-id.php';
 foreach (
 	array(
 		$root . '/includes/helpers/schema-enums.php',
+		$root . '/includes/schema/build-financing-offer.php',
 		$root . '/includes/schema/build-dealer-parts.php',
 		$root . '/includes/schema/build-dealer-node.php',
 	) as $f
@@ -252,6 +253,23 @@ gcp_schema_assert(
 gcp_schema_assert(
 	$have_builder && false === strpos( (string) json_encode( $node ), 'aggregateRating' ),
 	'D-08: node JSON contains no aggregateRating',
+	$tests,
+	$failures
+);
+
+// --- BIZ-02: financing_description → makesOffer → LoanOrCredit; empty → absent ---
+gcp_schema_assert(
+	$have_builder
+		&& isset( $node['makesOffer']['itemOffered']['@type'] )
+		&& 'LoanOrCredit' === $node['makesOffer']['itemOffered']['@type']
+		&& 'In-house financing available.' === $node['makesOffer']['itemOffered']['description'],
+	'BIZ-02: filled financing_description → makesOffer → Offer → LoanOrCredit',
+	$tests,
+	$failures
+);
+gcp_schema_assert(
+	$have_builder && ! array_key_exists( 'makesOffer', $min_node ),
+	'BIZ-02: empty financing_description → no makesOffer key',
 	$tests,
 	$failures
 );

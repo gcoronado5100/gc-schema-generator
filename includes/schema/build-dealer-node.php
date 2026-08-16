@@ -110,6 +110,12 @@ function gcp_schema_build_dealer_node( array $s ) {
 		$node['sameAs'] = $urls;
 	}
 
-	// 6. Return — NEVER add a fabricated rating/review aggregate (D-08).
+	// 6. Financing (BIZ-02): makesOffer → LoanOrCredit, only when the setting is filled.
+	$financing = gcp_schema_build_financing_offer( $s );
+	if ( ! empty( $financing ) ) {
+		$node['makesOffer'] = $financing;
+	}
+
+	// 7. Return — NEVER add a fabricated rating/review aggregate (D-08).
 	return $node;
 }

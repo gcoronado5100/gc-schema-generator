@@ -65,6 +65,13 @@ function gcp_schema_enrich_yoast_organization( array $node, array $settings ) {
 		$node['priceRange'] = $settings['price_range'];
 	}
 
+	if ( ! isset( $node['makesOffer'] ) ) {
+		$financing = gcp_schema_build_financing_offer( $settings );
+		if ( ! empty( $financing ) ) {
+			$node['makesOffer'] = $financing;
+		}
+	}
+
 	// NEVER add a fabricated rating/review aggregate (D-08).
 	return $node;
 }
