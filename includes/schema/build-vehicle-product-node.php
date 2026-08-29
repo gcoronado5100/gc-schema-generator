@@ -19,13 +19,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  * retired (Sept 2025) multi-typing one node is the standard way to keep the
  * Car vocabulary (VIN, odometer, engine, …) on the same entity as the Offer.
  *
+ * The Product type is attached ONLY when a real Offer can be attached with it.
+ * Google's Product snippet validation requires one of `offers`, `review` or
+ * `aggregateRating`; this plugin never fabricates ratings (D-08) and never
+ * emits a price-less/zero-price Offer, so a contact-for-pricing vehicle would
+ * otherwise surface in Search Console as "Either 'offers', 'review', or
+ * 'aggregateRating' should be specified". Google does not treat `Car` as a
+ * Product subtype, so a plain `Car` node keeps the vehicle semantics (VIN,
+ * odometer, engine, brand, …) without being evaluated as a Product snippet.
+ *
  * Honesty rules (same discipline as the dealer node):
  *  - Required gate: a name AND at least one image; otherwise array() —
  *    Google's Product markup is invalid without an image, so a photo-less
  *    vehicle emits nothing rather than something broken.
  *  - Every optional property is omitted when its source is empty/null.
- *  - The offers key appears only when gcp_schema_build_offer() returns a
- *    node (real price present).
+ *  - Real price  → `@type: ['Product','Car']` + `offers`.
+ *  - No real price → `@type: 'Car'` only, no `offers` key (never price 0).
  *  - NEVER an aggregateRating/review (D-08).
  *
  * @since feat/vehicle-schema-v1
@@ -44,8 +53,11 @@ function gcp_schema_build_vehicle_product_node( $post_id, array $settings, $sell
 		return array();
 	}
 
+	// Build the Offer first: it decides whether the node may carry the Product type.
+	$offer = gcp_schema_build_offer( $v, $settings, $seller_id );
+
 	$node = array(
-		'@type'         => array( 'Product', 'Car' ),
+		'@type'         => empty( $offer ) ? 'Car' : array( 'Product', 'Car' ),
 		'name'          => $v['name'],
 		'image'         => $v['images'],
 		'itemCondition' => 'https://schema.org/UsedCondition',
@@ -112,7 +124,6 @@ function gcp_schema_build_vehicle_product_node( $post_id, array $settings, $sell
 		);
 	}
 
-	$offer = gcp_schema_build_offer( $v, $settings, $seller_id );
 	if ( ! empty( $offer ) ) {
 		$node['offers'] = $offer;
 	}

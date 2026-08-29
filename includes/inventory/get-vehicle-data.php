@@ -69,8 +69,10 @@ function gcp_schema_get_vehicle_data( $post_id ) {
 	}
 
 	// --- Numbers (null when absent/placeholder — never fabricated) --------
-	$price_raw = $meta( '_e1ci_price' );
-	$price     = gcp_schema_price_is_real( $price_raw ) ? (float) $price_raw : null;
+	// Normalize first so a decorated value ("15,995", "$15995") is not silently
+	// mistaken for the contact-for-pricing placeholder and dropped.
+	$price_raw = gcp_schema_clean_number( $meta( '_e1ci_price' ) );
+	$price     = ( null !== $price_raw && gcp_schema_price_is_real( $price_raw ) ) ? $price_raw : null;
 
 	$msrp_raw = gcp_schema_clean_number( $meta( '_e1ci_msrp' ) );
 	$msrp     = ( null !== $msrp_raw && gcp_schema_price_is_real( $msrp_raw ) ) ? $msrp_raw : null;

@@ -168,6 +168,19 @@ gcp_schema_assert( null === $v2['price'], 'facade: placeholder price 1 → null 
 gcp_schema_assert( 'sold' === $v2['status'], 'facade: sold status surfaces', $tests, $failures );
 gcp_schema_assert( 'Corolla' === $v2['model'], 'facade: legacy _e1ci_model fallback when model term absent', $tests, $failures );
 
+// --- Decorated price string → normalized, NOT mistaken for the placeholder ----
+$vid_fmt = 150;
+$GLOBALS['__wp_titles'][ $vid_fmt ]    = '2021 Hyundai Elantra';
+$GLOBALS['__wp_post_meta'][ $vid_fmt ] = array( '_e1ci_price' => '$21,495' );
+$v_fmt = gcp_schema_get_vehicle_data( $vid_fmt );
+gcp_schema_assert( 21495.0 === $v_fmt['price'], "facade: '\$21,495' → 21495.0 (cleaned before the real-price gate)", $tests, $failures );
+
+$vid_txt = 151;
+$GLOBALS['__wp_titles'][ $vid_txt ]    = '2021 Hyundai Kona';
+$GLOBALS['__wp_post_meta'][ $vid_txt ] = array( '_e1ci_price' => 'Call for price' );
+$v_txt = gcp_schema_get_vehicle_data( $vid_txt );
+gcp_schema_assert( null === $v_txt['price'], "facade: non-numeric price text → null (never fabricated)", $tests, $failures );
+
 // --- Yoast meta description fallback -----------------------------------------
 $vid3 = 103;
 $GLOBALS['__wp_post_meta'][ $vid3 ] = array( '_yoast_wpseo_metadesc' => 'Fallback description.' );

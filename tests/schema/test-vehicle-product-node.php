@@ -89,6 +89,8 @@ gcp_schema_assert( 'https://schema.org/UsedCondition' === $node['itemCondition']
 gcp_schema_assert( 'EngineSpecification' === $node['vehicleEngine']['@type'], 'node: engine as EngineSpecification', $tests, $failures );
 gcp_schema_assert( ! array_key_exists( 'aggregateRating', $node ) && ! array_key_exists( 'review', $node ), 'node: never emits rating/review (D-08)', $tests, $failures );
 
+gcp_schema_assert( array( 'Product', 'Car' ) === $node['@type'], 'node: real price → multi-type [Product, Car]', $tests, $failures );
+
 $offer = $node['offers'];
 gcp_schema_assert( 'Offer' === $offer['@type'] && '15995.00' === $offer['price'], 'offer: price formatted to 2dp string', $tests, $failures );
 gcp_schema_assert( 'CAD' === $offer['priceCurrency'], 'offer: priceCurrency from settings', $tests, $failures );
@@ -109,7 +111,9 @@ $GLOBALS['__wp_post_meta'][ $vid2 ]  = array(
 $node2 = gcp_schema_build_vehicle_product_node( $vid2, $settings, $seller_id );
 gcp_schema_assert( 'https://schema.org/SoldOut' === $node2['offers']['availability'], 'sold: Offer emitted with SoldOut availability', $tests, $failures );
 
-// --- Contact-for-pricing: Product without offers -------------------------------
+// --- Contact-for-pricing: Car-only node, no Product, no offers ------------------
+// Google requires offers|review|aggregateRating on every Product; we never
+// fabricate any of them, so the Product type is dropped instead (GSC bug ticket).
 $vid3 = 203;
 $GLOBALS['__wp_titles'][ $vid3 ]     = '2020 Kia Forte';
 $GLOBALS['__wp_permalinks'][ $vid3 ] = 'https://example.test/listings/2020-kia-forte/';
@@ -117,10 +121,13 @@ $GLOBALS['__wp_thumbnails'][ $vid3 ] = 'https://example.test/kia.jpg';
 $GLOBALS['__wp_post_meta'][ $vid3 ]  = array(
 	'_e1ci_price'  => '1', // Placeholder.
 	'_e1ci_status' => 'available',
+	'_e1ci_vin'    => '1HGCM82633A004352',
 );
 $node3 = gcp_schema_build_vehicle_product_node( $vid3, $settings, $seller_id );
-gcp_schema_assert( ! array_key_exists( 'offers', $node3 ), 'placeholder price: Product emitted with NO offers key', $tests, $failures );
-gcp_schema_assert( 'Product' === $node3['@type'][0], 'placeholder price: node itself still valid', $tests, $failures );
+gcp_schema_assert( ! array_key_exists( 'offers', $node3 ), 'placeholder price: NO offers key (never price 0)', $tests, $failures );
+gcp_schema_assert( 'Car' === $node3['@type'], 'placeholder price: @type is plain "Car" (not a Product snippet)', $tests, $failures );
+gcp_schema_assert( ! in_array( 'Product', (array) $node3['@type'], true ), 'placeholder price: Product type never attached without an Offer', $tests, $failures );
+gcp_schema_assert( '2020 Kia Forte' === $node3['name'] && '1HGCM82633A004352' === $node3['vehicleIdentificationNumber'], 'placeholder price: Car semantics (name, VIN) still emitted', $tests, $failures );
 
 // --- Gate: no image → array() ---------------------------------------------------
 $vid4 = 204;
